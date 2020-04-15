@@ -6,9 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="COVIM" />
-        <module name="RossGraphing" />
+        <module name="GraphGUI" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="GraphGUI" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
