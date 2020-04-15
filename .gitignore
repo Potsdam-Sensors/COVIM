@@ -72,3 +72,4 @@ fabric.properties
 
 #Build files
 target/*
+dependency-reduced-pom.xml

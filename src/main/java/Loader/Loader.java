@@ -25,7 +25,9 @@ public class Loader extends Application {
         SHUTDOWN_ACTIVE = true;
         System.out.println("Starting Shut Down");
         try {
-            DeviceController.currentReader.closePort();
+            if(DeviceController.currentReader != null){
+                DeviceController.currentReader.closePort();
+            }
             Thread.sleep(5000);
 
         } catch (InterruptedException e) {

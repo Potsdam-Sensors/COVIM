@@ -6,7 +6,7 @@ import javafx.scene.control.ChoiceBox;
 
 public class MainController {
     @FXML
-    private ChoiceBox deviceChoiceBox;
+    private ChoiceBox<String> deviceChoiceBox;
     @FXML
     private LineChart<String, Number> lineChart;
     @FXML

@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.skin.ChoiceBoxSkin;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
@@ -18,22 +19,19 @@ import java.util.List;
 public class DeviceController {
 
     @FXML
-    private ChoiceBox deviceChoiceBox;
+    private ChoiceBox<String> deviceChoiceBox;
 
     private String[] ports;
     private SerialDataReader reader;
 
     public static SerialDataReader currentReader;
 
-    public DeviceController(ChoiceBox deviceChoiceBox){
+    public DeviceController(ChoiceBox<String> deviceChoiceBox){
         ports = SerialPortList.getPortNames();
         this.deviceChoiceBox = deviceChoiceBox;
         initialize();
     }
 
-    public SerialDataReader getReader(){
-        return this.getReader();
-    }
     public void initialize(){
         if(ports.length == 0){
             if(ports.length == 0){
@@ -68,6 +66,7 @@ public class DeviceController {
                         deviceChoiceBox.setValue(newPort);
                         break;
                     }
+                    System.out.println("Found reader");
                 } catch (SerialPortException ex) {
                     System.err.println(ex);
                     System.out.println(String.format("Device %s in use", deviceChoiceBox.getItems().get(i)));

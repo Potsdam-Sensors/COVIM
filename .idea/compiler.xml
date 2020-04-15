@@ -13,4 +13,10 @@
       <module name="GraphGUI" target="1.8" />
     </bytecodeTargetLevel>
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_STRING" value="-Xling:unchecked" />
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="GraphGUI" options="-verbose -Xlint:all,-options,-path" />
+    </option>
+  </component>
 </project>

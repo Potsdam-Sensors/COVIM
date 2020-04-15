@@ -26,6 +26,7 @@ public class GraphController {
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
     public GraphController(LineChart<String, Number> lineChart){
         this.reader = DeviceController.currentReader;
+        System.out.println("Reader Status: " + reader);
         this.lineChart = lineChart;
         this.lineChartX = (CategoryAxis)this.lineChart.getXAxis();
         this.lineChartY = (NumberAxis)this.lineChart.getYAxis();
@@ -52,7 +53,8 @@ public class GraphController {
                     System.out.println("Thread Existing...");
                     break;
                 }
-                System.out.println("DataFresh? : " + reader.isDataFresh());
+
+                System.err.println("Reader: " + reader);
                 if (reader.isDataFresh()) {
                     Platform.runLater(() -> {
                         String reading = reader.getLastReading();
