@@ -26,13 +26,12 @@ public class GraphController {
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
     public GraphController(LineChart<String, Number> lineChart){
         this.reader = DeviceController.currentReader;
-        System.out.println("Reader Status: " + reader);
         this.lineChart = lineChart;
         this.lineChartX = (CategoryAxis)this.lineChart.getXAxis();
         this.lineChartY = (NumberAxis)this.lineChart.getYAxis();
 
         this.lineChartX.setAnimated(false);
-        this.lineChartX.setLabel("Time (HH:mm:ss)");
+        this.lineChartX.setLabel("Time ");
 
         this.lineChartY.setAnimated(false);
         this.lineChartY.setLabel("Reading");
@@ -53,11 +52,11 @@ public class GraphController {
                     System.out.println("Thread Existing...");
                     break;
                 }
-
-                System.err.println("Reader: " + reader);
-                if (reader.isDataFresh()) {
+                if (reader != null && reader.isDataFresh()) {
                     Platform.runLater(() -> {
                         String reading = reader.getLastReading();
+                        System.out.println("Last Reading: " + reading);
+
                         String[] measure = formatReading(reading);
                         if(measure.length != 3){
                             System.err.println("Data packet did not conform to expected output (" + measure.length + ")");
@@ -73,7 +72,8 @@ public class GraphController {
 
                     });
                 }
-                System.out.println("Update Thread sleeping...");
+
+                System.out.println("Update Thread sleeping...; " + reader.isDataFresh());
                 try {
                     Thread.sleep(5000);
                 } catch (InterruptedException e) {
@@ -89,7 +89,13 @@ public class GraphController {
     }
 
     private String[] formatReading(String reading){
-        return reading.split(",");
+        if(this.reader == null){
+            System.err.println("Reader is null");
+            return new String[0];
+        }else{
+            return reading.split(",");
+
+        }
 
     }
 

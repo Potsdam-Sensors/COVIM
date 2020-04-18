@@ -10,7 +10,6 @@ public class MainController {
     @FXML
     private LineChart<String, Number> lineChart;
     @FXML
-
     public static DeviceController deviceController;
     public static GraphController graphController;
 

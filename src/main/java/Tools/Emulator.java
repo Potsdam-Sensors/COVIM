@@ -1,7 +1,6 @@
 package Tools;
 
-import jssc.SerialPort;
-import jssc.SerialPortException;
+import com.fazecast.jSerialComm.SerialPort;
 
 import java.util.Timer;
 
@@ -15,21 +14,20 @@ public class Emulator {
 
     public static void main(String args[]){
 
-        SerialPort serialPort = new SerialPort("COM1");
+        SerialPort[] ports = SerialPort.getCommPorts();
+        SerialPort port1 = null;
+        SerialPort port2 = null;
+        for (SerialPort port: ports) {
+            if(port.getSystemPortName().equals("COM1")) port1 = port;
+            if(port.getSystemPortName().equals("COM6")) port2 = port;
+        }
+        port1.openPort();
+      //  port2.openPort();
 
-        try {
-            serialPort.openPort();//Open serial port
-            serialPort.setParams(SerialPort.BAUDRATE_9600,
-                    SerialPort.DATABITS_8,
-                    SerialPort.STOPBITS_1,
-                    SerialPort.PARITY_NONE);//Set params. Also you can set params by this string: serialPort.setParams(9600, 8, 1, 0);
-        }
-        catch (SerialPortException ex) {
-            System.out.println(ex);
-        }
+
 
         Timer timer = new Timer();
-        timer.schedule(new DataSender(serialPort), 0, 5000);
+        timer.schedule(new DataSender(port1), 0, 5000);
 
     }
 }

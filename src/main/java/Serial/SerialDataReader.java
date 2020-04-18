@@ -1,47 +1,43 @@
 package Serial;
 
-import jssc.SerialPort;
-import jssc.SerialPortEvent;
-import jssc.SerialPortEventListener;
-import jssc.SerialPortException;
 
-public class SerialDataReader implements SerialPortEventListener {
+import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortDataListener;
+import com.fazecast.jSerialComm.SerialPortEvent;
+
+import java.util.Arrays;
+
+public class SerialDataReader implements SerialPortDataListener {
     private SerialParamInterface params;
     private SerialPort port;
     private String lastReading;
     private boolean isDataFresh;
 
-    public SerialDataReader(SerialParamInterface params) throws SerialPortException {
+    public SerialDataReader(SerialParamInterface params){
         this.params = params;
-        this.port = new SerialPort(this.params.getPort());
-        this.port.openPort();
-        this.port.setParams(
+        this.port = SerialPort.getCommPort(this.params.getPort());
+        boolean portOpen = this.port.openPort();
+        System.out.println("Port Avail: " + portOpen);
+        this.port.setComPortParameters(
                 params.getBaudRate(),
                 params.getDataBits(),
                 params.getStopBits(),
                 params.getParity()
         );
-        this.port.purgePort(SerialPort.PURGE_RXABORT | SerialPort.PURGE_RXCLEAR);
-        this.port.addEventListener(this);
+        this.port.addDataListener(this);
         this.lastReading = null;
         this.isDataFresh = false;
     }
 
-    public void openPort() throws SerialPortException {
-        this.port.openPort();
+
+
+    public void closePort(){
+        //this.port.closePort();
     }
 
-    public void closePort() throws SerialPortException {
-        this.port.closePort();
-    }
-
-    //@TODO
-    public void readPacket(){
-
-    }
 
     public boolean isOpen(){
-        return port.isOpened();
+        return port.isOpen();
     }
 
     public String getLastReading(){
@@ -51,19 +47,31 @@ public class SerialDataReader implements SerialPortEventListener {
     public boolean isDataFresh(){
         return this.isDataFresh;
     }
+
+    @Override
+    public int getListeningEvents() {
+        return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
+    }
+
     @Override
     public void serialEvent(SerialPortEvent serialPortEvent) {
         this.isDataFresh = false;
-        System.out.println("Read: " + serialPortEvent.getEventValue());
-        try {
-            String reading = this.port.readString();
+        System.out.println("Event: " + serialPortEvent);
+
+        if(this.port == null){
+            throw new NullPointerException("Port cannot be null");
+        }
+        if(serialPortEvent.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE) return;
+        byte[] data = new byte[this.port.bytesAvailable()];
+        this.port.readBytes(data, data.length);
+        System.out.println(Arrays.toString(data));
+        String reading = new String(data);
+        if(reading != null){
             this.lastReading = reading;
             this.isDataFresh = true;
-            this.port.purgePort(SerialPort.PURGE_RXABORT | SerialPort.PURGE_RXCLEAR);
-            System.out.println(reading);
-        } catch (SerialPortException e) {
-            e.printStackTrace();
+            System.out.println("SerialDataReader::59 Last Reading: " + this.lastReading);
         }
+
     }
 
 
